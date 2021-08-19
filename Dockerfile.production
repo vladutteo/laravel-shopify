@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 as adminapiProduction
+FROM ubuntu:20.04 as shopifyProduction
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -10,9 +10,9 @@ RUN apt-get -y install nginx supervisor curl git mc nano cron
 
 RUN apt-get update && apt-get -y install php${PHP_VERSION}-cli php${PHP_VERSION}-fpm php${PHP_VERSION}-json \
                         php${PHP_VERSION}-curl php${PHP_VERSION}-xml php${PHP_VERSION}-intl php${PHP_VERSION}-common \
-                        php${PHP_VERSION}-mbstring php${PHP_VERSION}-gd php${PHP_VERSION}-redis \
-                        php${PHP_VERSION}-opcache php${PHP_VERSION}-soap  php${PHP_VERSION}-zip php${PHP_VERSION}-tokenizer \
-                        php${PHP_VERSION}-dev php-pear libvips-dev libgraphicsmagick1-dev wkhtmltopdf
+                        php${PHP_VERSION}-mbstring \
+                        php${PHP_VERSION}-opcache php${PHP_VERSION}-soap  php${PHP_VERSION}-zip \
+                        php${PHP_VERSION}-dev php-pear
 
 RUN mkdir -p /var/log/git-pull-logs
 
@@ -44,3 +44,4 @@ RUN COMPOSER_MEMORY_LIMIT=-1 composer install
 
 COPY . /var/www/html
 
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
