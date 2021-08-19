@@ -1,0 +1,46 @@
+FROM ubuntu:20.04 as adminapiProduction
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+ENV PHP_VERSION=7.4
+
+RUN apt-get update
+
+RUN apt-get -y install nginx supervisor curl git mc nano cron
+
+RUN apt-get update && apt-get -y install php${PHP_VERSION}-cli php${PHP_VERSION}-fpm php${PHP_VERSION}-json \
+                        php${PHP_VERSION}-curl php${PHP_VERSION}-xml php${PHP_VERSION}-intl php${PHP_VERSION}-common \
+                        php${PHP_VERSION}-mbstring php${PHP_VERSION}-gd php${PHP_VERSION}-redis \
+                        php${PHP_VERSION}-opcache php${PHP_VERSION}-soap  php${PHP_VERSION}-zip php${PHP_VERSION}-tokenizer \
+                        php${PHP_VERSION}-dev php-pear libvips-dev libgraphicsmagick1-dev wkhtmltopdf
+
+RUN mkdir -p /var/log/git-pull-logs
+
+RUN apt-get -y install composer
+
+RUN mkdir -p /tmp/pear/cache
+
+RUN mkdir -p /run/php
+
+RUN apt-get -y install python3-certbot-nginx
+
+RUN chown -R nobody:nogroup /run
+
+COPY ./docker-server-config/production/cron-jobs/ /cron-jobs/
+
+RUN chmod +x /cron-jobs/*
+
+WORKDIR /var/www/html
+
+COPY composer.json /var/www/html
+COPY /database/ /var/www/html/database/
+
+COPY ./docker-server-config/production/php.ini /etc/php/7.4/cli/php.ini
+
+ENV TZ=Europe/Bucharest
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN COMPOSER_MEMORY_LIMIT=-1 composer install
+
+COPY . /var/www/html
+

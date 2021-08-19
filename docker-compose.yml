@@ -1,0 +1,52 @@
+version: "3.7"
+
+services:
+
+  shopify-webserver:
+    image: nginx:mainline-alpine
+    container_name: shopify-webserver
+    restart: unless-stopped
+    networks:
+      - shopify-net
+    ports:
+      - 8080:80
+    volumes:
+      - ./:/var/www/html
+      - ./nginx.sample.conf:/etc/nginx/nginx.conf
+
+  shopify-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shopify-app
+    restart: unless-stopped
+    user: www-data
+    networks:
+      - shopify-net
+    volumes:
+      - ./:/var/www/html
+
+  shopify-mysql:
+    image: mariadb:10.6.4
+    container_name: shopify-mysql
+    volumes:
+      - ./mysql:/var/lib/mysql
+    restart: unless-stopped
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    networks:
+      - shopify-net
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: shopify
+      MYSQL_USER: shopify
+      MYSQL_PASSWORD: shopify
+
+volumes:
+  db_data:
+
+networks:
+  shopify-net:
+    driver: bridge

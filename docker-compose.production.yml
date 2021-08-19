@@ -1,0 +1,29 @@
+version: '3'
+services:
+  admin-api:
+    privileged: true
+    build:
+      context: ./
+      dockerfile: Dockerfile.production
+    container_name: admin-api
+    image: admin-api
+    restart: unless-stopped
+    volumes:
+      - ./docker-server-config/production-octopus/php.ini:/etc/php/7.4/fpm/php.ini
+      - ./docker-server-config/production-octopus/php.ini:/etc/php/7.4/cli/php.ini
+      - ./docker-server-config/production-octopus/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker-server-config/production-octopus/fpm-pool.conf:/etc/php/7.4/fpm/pool.d/www.conf
+      - ./docker-server-config/production-octopus/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+      - ./:/var/www/html
+      - /var/www/html/vendor
+      - ./docker-server-config/production-octopus/letsencrypt/:/etc/letsencrypt/
+    ports:
+      - "${HOST_HTTP_PORT}:80"
+      - "${HOST_HTTPS_PORT}:443"
+    environment:
+      - PHP_MEM_LIMIT=2048M
+      - PHP_POST_MAX_SIZE=1024M
+      - PHP_UPLOAD_MAX_FILESIZE=1024M
+      - COMPOSER_MEMORY_LIMIT=-1
+      - APP_NAME=AdminAPI
+
