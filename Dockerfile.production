@@ -12,7 +12,7 @@ RUN apt-get update && apt-get -y install php${PHP_VERSION}-cli php${PHP_VERSION}
                         php${PHP_VERSION}-curl php${PHP_VERSION}-xml php${PHP_VERSION}-intl php${PHP_VERSION}-common \
                         php${PHP_VERSION}-mbstring \
                         php${PHP_VERSION}-opcache php${PHP_VERSION}-soap  php${PHP_VERSION}-zip \
-                        php${PHP_VERSION}-dev php-pear
+                        php${PHP_VERSION}-mysql php-pear
 
 RUN mkdir -p /var/log/git-pull-logs
 
@@ -39,6 +39,8 @@ COPY ./docker-server-config/production/php.ini /etc/php/7.4/cli/php.ini
 
 ENV TZ=Europe/Bucharest
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN composer install
 
 COPY . /var/www/html
 
