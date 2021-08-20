@@ -18,8 +18,9 @@ services:
       - /var/www/html/vendor
       - ./docker-server-config/production/letsencrypt/:/etc/letsencrypt/
     ports:
-      - "${HOST_HTTP_PORT}:80"
-      - "${HOST_HTTPS_PORT}:443"
+      - "8080:80"
+    networks:
+      - shopify-net
     environment:
       - PHP_MEM_LIMIT=2048M
       - PHP_POST_MAX_SIZE=1024M
@@ -38,10 +39,10 @@ services:
     networks:
       - shopify-net
     environment:
-      MYSQL_ROOT_PASSWORD: *********
-      MYSQL_DATABASE: *********
-      MYSQL_USER: *********
-      MYSQL_PASSWORD: *********
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: shopify
+      MYSQL_USER: shopify
+      MYSQL_PASSWORD: shopify
 
 networks:
   shopify-net:
