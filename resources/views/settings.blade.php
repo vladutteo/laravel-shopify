@@ -4,10 +4,6 @@
 @section('styles')
     <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic' rel='stylesheet' type='text/css'>
     <link href="{{asset('css/app.css')}}" rel="stylesheet" type="text/css">
-    <link
-        rel="stylesheet"
-        href="https://unpkg.com/@shopify/polaris@6.6.0/dist/styles.css"
-    />
 @endsection
 
 @section('content')
