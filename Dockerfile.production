@@ -40,8 +40,6 @@ COPY ./docker-server-config/production/php.ini /etc/php/7.4/cli/php.ini
 ENV TZ=Europe/Bucharest
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-RUN COMPOSER_MEMORY_LIMIT=-1 composer install
-
 COPY . /var/www/html
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
