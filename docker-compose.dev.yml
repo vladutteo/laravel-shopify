@@ -2,29 +2,23 @@ version: "3.7"
 
 services:
 
-  shopify-webserver:
-    image: nginx:mainline-alpine
-    container_name: shopify-webserver
+  shopify-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: shopify-app
     restart: unless-stopped
     networks:
       - shopify-net
     ports:
-      - 8080:80
+      - "8080:80"
     volumes:
       - ./:/var/www/html
-      - ./nginx.sample.conf:/etc/nginx/nginx.conf
-
-  shopify-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: shopify-app
-    restart: unless-stopped
-    user: www-data
-    networks:
-      - shopify-net
-    volumes:
-      - ./:/var/www/html
+      - ./docker-server-config/dev/php.ini:/etc/php/7.4/fpm/php.ini
+      - ./docker-server-config/dev/php.ini:/etc/php/7.4/cli/php.ini
+      - ./docker-server-config/dev/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker-server-config/dev/fpm-pool.conf:/etc/php/7.4/fpm/pool.d/www.conf
+      - ./docker-server-config/dev/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
 
   shopify-mysql:
     image: mariadb:10.6.4

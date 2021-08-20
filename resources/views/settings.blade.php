@@ -106,15 +106,5 @@
 
         });
 
-
-        // Unsubscribe to click actions
-        var TitleBar = actions.TitleBar;
-        var titleBarOptions = {
-            buttons: {
-                primary: saveButton,
-            },
-        };
-
-        TitleBar.create(app, titleBarOptions);
     </script>
 @endsection
